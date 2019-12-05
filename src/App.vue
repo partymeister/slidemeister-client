@@ -1,19 +1,38 @@
 <template>
     <div id="app">
+        <div class="server-error alert alert-danger d-none">
+            {{error}}
+        </div>
         <router-view/>
     </div>
 </template>
 
 <script>
-
     const axios = require('axios');
+    import toast from "@/mixins/toast";
 
     export default {
+        data() {
+            return {
+                error: false
+            };
+        },
+        mixins: [
+            toast
+        ],
         mounted() {
             this.$eventHub.$on('server-configuration-update', () => {
                 this.getConfigFromServer();
             });
             this.getConfigFromServer();
+            this.$eventHub.$on('socket-unavailable', () => {
+                this.error = 'Socket connection not available. Please check your configuration';
+                document.querySelector('.server-error').classList.remove('d-none');
+            });
+            this.$eventHub.$on('socket-connected', () => {
+                this.error = false;
+                document.querySelector('.server-error').classList.add('d-none');
+            });
         },
         methods: {
             getConfigFromServer() {
@@ -26,11 +45,16 @@
                         axios.get(serverConfiguration.server + '/api/slide_clients/' + serverConfiguration.client).then(result => {
                             localStorage.setItem('slideClientConfiguration', JSON.stringify(result.data.data));
                             this.$eventHub.$emit('slide-client-loaded');
+                            this.error = false;
+                            document.querySelector('.server-error').classList.add('d-none');
+                            this.toast('Slide client configuration loaded');
                         }).catch(e => {
-                            console.error(e);
+                            this.error = 'Problems getting slide client configuration from server. Please check your configuration. ('+e.message+')';
+                            document.querySelector('.server-error').classList.remove('d-none');
                         });
                     } else {
-                        console.log('No server configured');
+                        this.error = 'No server is configured. Please check your configuration.';
+                        document.querySelector('.server-error').classList.remove('d-none');
                     }
                 }
             }
@@ -55,48 +79,9 @@
     @import "~animate.css";
     @import "~toastr/toastr";
 
-    .medium-editor-element {
-        z-index: 10000;
-        width: 98%;
-        margin: 0 auto;
-        text-align: left;
-        font-family: Arial, sans-serif;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    .medium-editor-element p {
+    .server-error {
         margin-bottom: 0;
-    }
-
-    .moveable {
-        display: flex;
-        font-family: "Roboto", sans-serif;
-        z-index: 1000;
-        position: absolute;
-        width: 300px;
-        height: 200px;
         text-align: center;
-        font-size: 40px;
-        margin: 0 auto;
-        font-weight: 100;
-        letter-spacing: 1px;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
-    }
-
-    .movable span {
-        font-size: 10px;
-    }
-
-    .snappable-shadow {
-        width: 200px;
-        height: 200px;
-        /*background-color: red;*/
-        position: absolute;
-        visibility: hidden;
+        z-index: 40000;
     }
 </style>

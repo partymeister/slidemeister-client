@@ -49,6 +49,14 @@ export default {
                 wsPath: this.serverConfiguration.path,
                 disableStats: true,
             });
+
+            this.server.connector.pusher.connection.bind('unavailable', () => {
+                this.$eventHub.$emit('socket-unavailable');
+            });
+            this.server.connector.pusher.connection.bind('connected', () => {
+                this.toast('Socket connection established');
+                this.$eventHub.$emit('socket-connected');
+            });
         },
         addListeners() {
             this.server.channel('partymeister.slidemeister-web.' + this.serverConfiguration.client)

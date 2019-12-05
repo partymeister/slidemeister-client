@@ -1,17 +1,33 @@
 <template>
   <div>
-    <slidemeister-web ref="slidemeisterweb" :jingles="[]" configuration="[]" route=""></slidemeister-web>
+    <configuration v-show="showConfiguration"></configuration>
+    <slidemeister-viewer ref="slidemeisterweb"></slidemeister-viewer>
   </div>
 </template>
 
 <script>
 
-  import SlidemeisterWeb from "@/components/SlidemeisterWeb";
+  import SlidemeisterViewer from "@/components/SlidemeisterViewer";
+  import Configuration from "@/components/Configuration";
 
 export default {
   name: 'viewer',
   components: {
-    SlidemeisterWeb,
+    Configuration,
+    SlidemeisterViewer,
+  },
+  data: function() {
+    return {
+      showConfiguration: false,
+    };
+  },
+  mounted() {
+    this.$eventHub.$on('show-viewer', () => {
+      this.showConfiguration = false;
+    });
+    this.$eventHub.$on('show-configuration', () => {
+      this.showConfiguration = true;
+    });
   }
 }
 </script>

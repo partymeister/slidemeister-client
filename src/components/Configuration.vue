@@ -1,7 +1,7 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 mt-5">
+    <div class="container configuration">
+        <div class="row pb-3">
+            <div class="col-md-12 mt-3">
                 <h3 class="mb-4">Configuration</h3>
                 <div class="row">
                     <div class="col-md-6">
@@ -45,7 +45,7 @@
                 </div>
                 <button @click="saveConfiguration" type="submit" class="btn btn-block btn-primary">Save configuration
                 </button>
-                <button @click="routeToViewer" type="submit" class="btn btn-block btn-secondary">Back to the viewer
+                <button @click="backToViewer" type="submit" class="btn btn-block btn-secondary">Back to the viewer
                 </button>
             </div>
         </div>
@@ -80,8 +80,8 @@
             }
         },
         methods: {
-            routeToViewer() {
-                this.$router.push({name: 'viewer'});
+            backToViewer() {
+                this.$eventHub.$emit('show-viewer');
             },
             saveConfiguration() {
                 localStorage.setItem('serverConfiguration', JSON.stringify(this.configuration));
@@ -95,8 +95,17 @@
     }
 </script>
 <style lang="scss">
-    body {
+    .container.configuration {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 50000;
         background: white;
         cursor: initial !important;
-    }
+        -webkit-box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.62);
+        -moz-box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.62);
+        box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.62);    }
 </style>

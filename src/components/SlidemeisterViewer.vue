@@ -9,6 +9,7 @@
 
 
 
+
         </script>
         <div id="shader-container"></div>
         <div class="debug alert alert-danger d-none">
@@ -16,7 +17,8 @@
             Playlist: {{ playlist.name }}<br>
             Items: {{ items.length }}<br>
             CurrentItem: {{ currentItem }}<br>
-            <button @click="deleteStorage">Empty cache</button>
+            <button @click="deleteStorage" class="btn btn-sm btn-primary btn-block">Empty cache</button>
+            <button @click="goToConfiguration" class="btn btn-sm btn-primary btn-block">Server configuration</button>
             <vue-audio style="display: none;" id="jingle-player" :file="jingle"/>
         </div>
 
@@ -63,7 +65,8 @@
     import siegmeister from "../mixins/siegmeister";
     import shader from "../mixins/shader";
     import VueAudio from 'vue-audio';
-    import echo from '../mixins/echo';
+    import toast from "@/mixins/toast";
+    import echo from "@/mixins/echo";
 
     export default {
         name: 'partymeister-slidemeister-web',
@@ -76,6 +79,7 @@
             jingles,
             siegmeister,
             shader,
+            toast,
             echo,
         ],
         data: function () {
@@ -144,6 +148,9 @@
             },
         },
         methods: {
+            goToConfiguration() {
+                this.$router.push({name: 'configuration'});
+            },
             seekToPlayNow() {
                 this.playNow = true;
                 this.next;
@@ -441,34 +448,42 @@
                     configuration = JSON.parse(configuration);
                     Vue.set(this, 'configuration', configuration.configuration);
                 }
-            }
+            },
         },
-        mounted() {
+        created() {
+            this.$eventHub.$on('show-viewer', () => {
+                window.addEventListener('keydown', this.addListener, false);
+            });
             this.$eventHub.$on('slide-client-loaded', () => {
                 this.getSlideClientConfiguration();
             });
 
             this.getSlideClientConfiguration();
-            document.addEventListener('DOMContentLoaded', () => {
 
-                window.onresize = () => {
-                    this.resizeWindow();
-                };
+            window.onresize = () => {
+                this.resizeWindow();
+            };
 
-                setTimeout(() => {
-                    this.resizeWindow();
-                }, 0);
+            setTimeout(() => {
+                this.resizeWindow();
+            }, 0);
 
-                // Check if we have playlists in local storage
+            // Check if we have playlists in local storage
+            if (this.cachedPlaylists.length === 0) {
                 let cachedPlaylists = localStorage.getItem('cachedPlaylists');
                 if (cachedPlaylists !== undefined && cachedPlaylists != null) {
                     this.cachedPlaylists = JSON.parse(cachedPlaylists);
                 }
+            }
+            if (Object.keys(this.playlist).length === 0) {
                 let playlist = localStorage.getItem('playlist');
                 if (playlist !== undefined && playlist != null) {
                     this.playlist = JSON.parse(playlist);
                     this.items = this.playlist.items;
                 }
+            }
+
+            if (this.currentItem === null) {
                 let currentItem = localStorage.getItem('currentItem');
                 if (currentItem !== undefined && currentItem != null) {
                     // Delay is necessary to correctly load the background shader on first load
@@ -476,7 +491,7 @@
                         this.seekToIndex(parseInt(currentItem), true);
                     }, 500);
                 }
-            }, false);
+            }
 
         }
     }
@@ -573,5 +588,50 @@
 
     div[data-partymeister-slides-visibility='preview'] {
         display: none;
+    }
+
+    .medium-editor-element {
+        z-index: 10000;
+        width: 98%;
+        margin: 0 auto;
+        text-align: left;
+        font-family: Arial, sans-serif;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .medium-editor-element p {
+        margin-bottom: 0;
+    }
+
+    .moveable {
+        display: flex;
+        font-family: "Roboto", sans-serif;
+        z-index: 1000;
+        position: absolute;
+        width: 300px;
+        height: 200px;
+        text-align: center;
+        font-size: 40px;
+        margin: 0 auto;
+        font-weight: 100;
+        letter-spacing: 1px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+
+    .movable span {
+        font-size: 10px;
+    }
+
+    .snappable-shadow {
+        width: 200px;
+        height: 200px;
+        /*background-color: red;*/
+        position: absolute;
+        visibility: hidden;
     }
 </style>

@@ -26,17 +26,14 @@ export default {
                     break;
             }
 
-            if (e.key === 'c' && this.$router.currentRoute.name !== 'configuration') {
-                this.$router.push({name: 'configuration'});
-            }
-
-            if (e.key === 'v' && this.$router.currentRoute.name !== 'viewer') {
-                this.$router.push({name: 'viewer'});
+            if (e.key === 'c') {
+                this.$eventHub.$emit('show-configuration');
+                window.removeEventListener('keydown', this.addListener, false);
             }
 
             if (e.key === 'd') {
                 e.preventDefault();
-                let debugWindow = document.querySelector('.alert.alert-danger');
+                let debugWindow = document.querySelector('.debug');
                 if (debugWindow.className.match(/\bd-none\b/)) {
                     debugWindow.classList.remove('d-none');
                     document.querySelector('.main').style.cursor = 'inherit';

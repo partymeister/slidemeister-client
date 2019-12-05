@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Viewer from '../views/Viewer.vue'
-import Configuration from '../views/Configuration.vue';
 
 Vue.use(VueRouter)
 
@@ -10,11 +9,6 @@ const routes = [
         path: '/viewer',
         name: 'viewer',
         component: Viewer
-    },
-    {
-        path: '/configuration',
-        name: 'configuration',
-        component: Configuration,
     },
     {path: '*', redirect: '/viewer'}
 ]
