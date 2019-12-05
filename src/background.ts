@@ -20,10 +20,9 @@ function createWindow() {
             nodeIntegration: true
         },
         minWidth: 1280,
-        minHeight: 720,
+        minHeight: 742,
         width: 1280,
-        height: 720,
-        // titleBarStyle: 'hiddenInset',
+        height: 742,
         icon: path.join('icon.png')
     });
 

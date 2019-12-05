@@ -529,7 +529,7 @@
     main .debug {
         position: absolute;
         z-index: 10000;
-        opacity: 0.8;
+        opacity: 0.9;
     }
 
     main .previous {
