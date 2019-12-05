@@ -1,14 +1,14 @@
 <template>
   <div>
     <configuration v-show="showConfiguration"></configuration>
-    <slidemeister-viewer ref="slidemeisterweb"></slidemeister-viewer>
+    <slidemeister-viewer ref="slidemeisterweb" :standalone="true"></slidemeister-viewer>
   </div>
 </template>
 
 <script>
 
-  import SlidemeisterViewer from "@/components/SlidemeisterViewer";
-  import Configuration from "@/components/Configuration";
+  import SlidemeisterViewer from "../components/SlidemeisterViewer";
+  import Configuration from "../components/Configuration";
 
 export default {
   name: 'viewer',

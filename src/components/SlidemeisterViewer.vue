@@ -18,7 +18,7 @@
             Items: {{ items.length }}<br>
             CurrentItem: {{ currentItem }}<br>
             <button @click="deleteStorage" class="btn btn-sm btn-primary btn-block">Empty cache</button>
-            <button @click="goToConfiguration" class="btn btn-sm btn-primary btn-block">Server configuration</button>
+            <button v-if="standalone" @click="goToConfiguration" class="btn btn-sm btn-primary btn-block">Server configuration</button>
             <vue-audio style="display: none;" id="jingle-player" :file="jingle"/>
         </div>
 
@@ -65,12 +65,12 @@
     import siegmeister from "../mixins/siegmeister";
     import shader from "../mixins/shader";
     import VueAudio from 'vue-audio';
-    import toast from "@/mixins/toast";
-    import echo from "@/mixins/echo";
+    import toast from "../mixins/toast";
+    import echo from "../mixins/echo";
 
     export default {
         name: 'partymeister-slidemeister-web',
-        props: ['jingles', 'route'],
+        props: ['standalone'],
         components: {
             VueAudio
         },

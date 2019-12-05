@@ -24,9 +24,9 @@ export default {
         });
 
         let serverConfiguration = localStorage.getItem('serverConfiguration');
-        if (serverConfiguration === null) {
+        if (this.standalone && serverConfiguration === null) {
             this.$router.push({name: 'configuration'});
-        } else {
+        } else if (serverConfiguration !== null) {
             serverConfiguration = JSON.parse(serverConfiguration);
 
             Vue.set(this, 'serverConfiguration', serverConfiguration);
@@ -47,6 +47,7 @@ export default {
                 wsHost: this.serverConfiguration.host,
                 wsPort: this.serverConfiguration.port,
                 wsPath: this.serverConfiguration.path,
+                enabledTransports: ['wss', 'ws'],
                 disableStats: true,
             });
 

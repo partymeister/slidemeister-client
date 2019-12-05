@@ -26,7 +26,7 @@ export default {
                     break;
             }
 
-            if (e.key === 'c') {
+            if (this.standalone && e.key === 'c') {
                 this.$eventHub.$emit('show-configuration');
                 window.removeEventListener('keydown', this.addListener, false);
             }
