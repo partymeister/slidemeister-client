@@ -9,7 +9,7 @@
 
 <script>
     const axios = require('axios');
-    import toast from "mixins/toast";
+    import toast from "@/mixins/toast";
 
     export default {
         data() {
