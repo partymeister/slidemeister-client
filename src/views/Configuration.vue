@@ -72,6 +72,13 @@
                 }
             };
         },
+        mounted() {
+            let serverConfiguration = localStorage.getItem('serverConfiguration');
+            if (serverConfiguration !== null) {
+                serverConfiguration = JSON.parse(serverConfiguration);
+                this.configuration = serverConfiguration;
+            }
+        },
         methods: {
             routeToViewer() {
                 this.$router.push({name: 'viewer'});

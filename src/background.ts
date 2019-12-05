@@ -23,7 +23,7 @@ function createWindow() {
         minHeight: 720,
         width: 1280,
         height: 720,
-        titleBarStyle: 'hiddenInset',
+        // titleBarStyle: 'hiddenInset',
         icon: path.join('icon.png')
     });
 

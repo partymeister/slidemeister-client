@@ -57,6 +57,7 @@
 <script>
 
     const axios = require('axios');
+    import Vue from 'vue';
     import keybindings from "../mixins/keybindings";
     import jingles from "../mixins/jingles";
     import siegmeister from "../mixins/siegmeister";
@@ -83,6 +84,7 @@
                 nextOpacity: 0,
                 zoom: 2,
                 cachedPlaylists: [],
+                configuration: {},
 
                 clearPlayNowAfter: false,
                 playNow: false,
@@ -360,6 +362,7 @@
                     default:
                         newFragmentShader = '';
                 }
+
                 if (newFragmentShader !== this.fragmentShader && newFragmentShader !== '') {
                     this.fragmentShader = newFragmentShader;
                     this.unloadScene();
@@ -388,9 +391,12 @@
                     currentItem: currentItemId,
                 };
 
-                axios.post(this.configuration.server + '/ajax/slidemeister-web/' + this.configuration.client + '/status', data).then(response => {
-                    // console.log('Updated status');
-                });
+                if (this.configuration.server !== undefined) {
+                    axios.post(this.configuration.server + '/ajax/slidemeister-web/' + this.configuration.client + '/status', data).then(response => {
+                        // console.log('Updated status');
+                    });
+                }
+
             },
             resizeWindow() {
                 let scaleX = window.innerWidth / 960;
@@ -429,8 +435,20 @@
                 localStorage.clear();
                 this.updateStatus();
             },
+            getSlideClientConfiguration() {
+                let configuration = localStorage.getItem('slideClientConfiguration');
+                if (configuration !== undefined && configuration !== null) {
+                    configuration = JSON.parse(configuration);
+                    Vue.set(this, 'configuration', configuration.configuration);
+                }
+            }
         },
         mounted() {
+            this.$eventHub.$on('slide-client-loaded', () => {
+                this.getSlideClientConfiguration();
+            });
+
+            this.getSlideClientConfiguration();
             document.addEventListener('DOMContentLoaded', () => {
 
                 window.onresize = () => {
